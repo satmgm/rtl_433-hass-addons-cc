@@ -887,7 +887,7 @@ secret_knock_mappings = [
 
 ]
 
-TOPIC_PARSE_RE = re.compile(r'\[(?P<slash>/?)(?P<token>[^\]:]+):?(?P<default>[^\]:*)\]')
+TOPIC_PARSE_RE = re.compile(r'\[(?P<slash>/?)(?P<token>[^\]:]+):?(?P<default>[^\]:]*)\]')
 
 
 def mqtt_connect(client, userdata, flags, rc):
