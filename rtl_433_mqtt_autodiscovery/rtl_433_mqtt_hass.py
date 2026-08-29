@@ -173,8 +173,7 @@ mappings = {
         }
     },
     "temperature_F": {
-	
-	        "device_type": "sensor",
+        "device_type": "sensor",
         "object_suffix": "F",
         "config": {
             "device_class": "temperature",
@@ -232,7 +231,7 @@ mappings = {
         "config": {
             "device_class": "power",
             "name": "Power 1",
-			            "unit_of_measurement": "W",
+            "unit_of_measurement": "W",
             "value_template": "{{ value|float }}",
             "state_class": "measurement"
         }
@@ -290,7 +289,7 @@ mappings = {
     "humidity_1": {
         "device_type": "sensor",
         "object_suffix": "H1",
-		        "config": {
+        "config": {
             "device_class": "humidity",
             "name": "Humidity 1",
             "unit_of_measurement": "%",
@@ -348,7 +347,7 @@ mappings = {
 
     "pressure_kPa": {
         "device_type": "sensor",
-		       "object_suffix": "P",
+        "object_suffix": "P",
         "config": {
             "device_class": "pressure",
             "name": "Pressure",
@@ -463,7 +462,7 @@ mappings = {
             "value_template": "{{ float(value|float) * 3.6 }}",
             "state_class": "measurement"
         }
-		    },
+    },
 
     "wind_dir_deg": {
         "device_type": "sensor",
@@ -521,7 +520,7 @@ mappings = {
             "unit_of_measurement": "in/h",
             "value_template": "{{ value|float|round(2) }}",
             "state_class": "measurement"
-			        }
+        }
     },
 
     "reed_open": {
@@ -579,7 +578,7 @@ mappings = {
             "device_class": "signal_strength",
             "unit_of_measurement": "dB",
             "value_template": "{{ value|float|round(2) }}",
-			            "state_class": "measurement",
+            "state_class": "measurement",
             "entity_category": "diagnostic"
         }
     },
@@ -637,7 +636,7 @@ mappings = {
         "config": {
             "device_class": "energy",
             "name": "Energy",
-			            "unit_of_measurement": "kWh",
+            "unit_of_measurement": "kWh",
             "value_template": "{{ value|float }}",
             "state_class": "total_increasing"
         }
@@ -695,7 +694,7 @@ mappings = {
         "object_suffix": "uv",
         "config": {
             "name": "UV Value",
-			            "unit_of_measurement": "UV",
+            "unit_of_measurement": "UV",
             "value_template": "{{ value|float|round(1) }}",
             "state_class": "measurement"
         }
@@ -753,7 +752,6 @@ mappings = {
             "state_class": "total_increasing"
         }
     },
-	
     "consumption_data": {
         "device_type": "sensor",
         "object_suffix": "consumption",
@@ -811,7 +809,7 @@ mappings = {
     "pm10_ug_m3": {
         "device_type": "sensor",
         "object_suffix": "PM10",
-		        "config": {
+        "config": {
             "device_class": "pm10",
             "name": "PM 10 Concentration",
             "unit_of_measurement": "µg/m³",
@@ -869,7 +867,7 @@ secret_knock_mappings = [
         "device_type": "device_automation",
         "object_suffix": "Knock",
         "config": {
-		            "automation_type": "trigger",
+            "automation_type": "trigger",
             "type": "button_short_release",
             "subtype": "button_1",
             "payload": 0,
@@ -889,7 +887,8 @@ secret_knock_mappings = [
 
 ]
 
-TOPIC_PARSE_RE = re.compile(r'\[(?P<slash>/?)(?P<token>[^\]:]+):?(?P<default>[^\]:]*)\]')
+TOPIC_PARSE_RE = re.compile(r'\[(?P<slash>/?)(?P<token>[^\]:]+):?(?P<default>[^\]:*)\]')
+
 
 def mqtt_connect(client, userdata, flags, rc):
     """Callback for MQTT connects."""
@@ -927,9 +926,10 @@ def sanitize(text):
     """Sanitize a name for Graphite/MQTT use."""
     return (text
             .replace(" ", "_")
-			            .replace("/", "_")
+            .replace("/", "_")
             .replace(".", "_")
             .replace("&", ""))
+
 
 def rtl_433_device_info(data, topic_prefix):
     """Return rtl_433 device topic to subscribe to for a data element, based on the
@@ -985,7 +985,7 @@ def publish_config(mqttc, topic, model, object_id, mapping, key=None):
     # https://www.home-assistant.io/integrations/device_trigger.mqtt/
     if device_type == 'device_automation':
         config["topic"] = topic
-		config["platform"] = 'mqtt'
+        config["platform"] = 'mqtt'
     else:
         readable_name = mapping["config"]["name"] if "name" in mapping["config"] else key
         config["state_topic"] = topic
@@ -1004,6 +1004,7 @@ def publish_config(mqttc, topic, model, object_id, mapping, key=None):
     mqttc.publish(path, json.dumps(config), retain=args.retain)
 
     return True
+
 
 def bridge_event_to_hass(mqttc, topic_prefix, data):
     """Translate some rtl_433 sensor data to Home Assistant auto discovery."""
@@ -1043,7 +1044,7 @@ def bridge_event_to_hass(mqttc, topic_prefix, data):
     if "secret_knock" in data.keys():
         for m in secret_knock_mappings:
             topic = "/".join([base_topic, "secret_knock"])
-			            if publish_config(mqttc, topic, model, device_id, m, "secret_knock"):
+            if publish_config(mqttc, topic, model, device_id, m, "secret_knock"):
                 published_keys.append("secret_knock")
 
     if published_keys:
@@ -1051,6 +1052,7 @@ def bridge_event_to_hass(mqttc, topic_prefix, data):
 
         if skipped_keys:
             logging.info("Skipped %s: %s" % (device_id, ", ".join(skipped_keys)))
+
 
 
 def rtl_433_bridge():
@@ -1101,7 +1103,7 @@ if __name__ == "__main__":
 
     parser.add_argument("-d", "--debug", action="store_true")
     parser.add_argument("-q", "--quiet", action="store_true")
-	    parser.add_argument("-u", "--user", type=str, help="MQTT username")
+    parser.add_argument("-u", "--user", type=str, help="MQTT username")
     parser.add_argument("-P", "--password", type=str, help="MQTT password")
     parser.add_argument("-H", "--host", type=str, default="127.0.0.1",
                         help="MQTT hostname to connect to (default: %(default)s)")
@@ -1135,59 +1137,7 @@ if __name__ == "__main__":
                         help="Number of seconds with no updates after which the sensor becomes unavailable")
     parser.add_argument("-I", "--ids", type=int, nargs="+",
                         help="ID's of devices that will be discovered (omit for all)")
-    args = parser.parse_args()
 
-    if args.debug and args.quiet:
-        logging.critical("Debug and quiet can not be specified at the same time")
-        exit(1)
-
-    if args.debug:
-        logging.info("Enabling debug logging")
-        logging.getLogger().setLevel(logging.DEBUG)
-    if args.quiet:
-        logging.getLogger().setLevel(logging.ERROR)
-
-    # allow setting MQTT username and password via environment variables
-    if not args.user and 'MQTT_USERNAME' in os.environ:
-        args.user = os.environ['MQTT_USERNAME']
-
-    if not args.password and 'MQTT_PASSWORD' in os.environ:
-        args.password = os.environ['MQTT_PASSWORD']
-
-    if not args.user or not args.password:
-        logging.warning("User or password is not set. Check credentials if subscriptions do not return messages.")
-
-    if args.ids:
-        ids = ', '.join(str(id) for id in args.ids)
-		                        help="MQTT port (default: %(default)s)")
-    parser.add_argument("-c", "--ca_cert", type=str, help="MQTT TLS CA certificate path")
-    parser.add_argument("--cert", type=str, help="MQTT TLS certificate path")
-    parser.add_argument("--key", type=str, help="MQTT TLS certificate key path")
-    parser.add_argument("-r", "--retain", action="store_true")
-    parser.add_argument("-f", "--force_update", action="store_true",
-                        help="Append 'force_update = true' to all configs.")
-    parser.add_argument("-R", "--rtl-topic", type=str,
-                        default="rtl_433/+/events",
-                        dest="rtl_topic",
-                        help="rtl_433 MQTT event topic to subscribe to (default: %(default)s)")
-    parser.add_argument("-D", "--discovery-prefix", type=str,
-                        dest="discovery_prefix",
-                        default="homeassistant",
-                        help="Home Assistant MQTT topic prefix (default: %(default)s)")
-    # This defaults to the rtl433 config default, so we assemble the same topic structure
-    parser.add_argument("-T", "--device-topic_suffix", type=str,
-                        dest="device_topic_suffix",
-                        default="devices[/type][/model][/subtype][/channel][/id]",
-                        help="rtl_433 device topic suffix (default: %(default)s)")
-    parser.add_argument("-i", "--interval", type=int,
-                        dest="discovery_interval",
-                        default=600,
-                        help="Interval to republish config topics in seconds (default: %(default)d)")
-    parser.add_argument("-x", "--expire-after", type=int,
-                        dest="expire_after",
-                        help="Number of seconds with no updates after which the sensor becomes unavailable")
-    parser.add_argument("-I", "--ids", type=int, nargs="+",
-                        help="ID's of devices that will be discovered (omit for all)")
     args = parser.parse_args()
 
     if args.debug and args.quiet:
@@ -1216,4 +1166,4 @@ if __name__ == "__main__":
     else:
         logging.info("Discovering all devices")
 
-    run()	
+    run()
