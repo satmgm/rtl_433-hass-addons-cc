@@ -1,5 +1,5 @@
 {
   "name": "rtl_433 Home Assistant add-ons",
-  "url": "https://github.com/pbkhrv/rtl_433-hass-addons",
-  "maintainer": "Peter Bakhirev"
+  "url": "https://github.com/satmgm/rtl_433-hass-addons-cc",
+  "maintainer": "satmgm, forked from Peter Bakhirev's work"
 }
