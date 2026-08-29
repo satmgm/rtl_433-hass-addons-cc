@@ -985,7 +985,7 @@ def publish_config(mqttc, topic, model, object_id, mapping, key=None):
     # https://www.home-assistant.io/integrations/device_trigger.mqtt/
     if device_type == 'device_automation':
         config["topic"] = topic
-		        config["platform"] = 'mqtt'
+		config["platform"] = 'mqtt'
     else:
         readable_name = mapping["config"]["name"] if "name" in mapping["config"] else key
         config["state_topic"] = topic
